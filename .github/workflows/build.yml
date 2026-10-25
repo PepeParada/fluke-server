@@ -1,0 +1,18 @@
+name: Build
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+      - name: Integrar vcpkg
+        run: '& "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" integrate install'
+      - name: Compilar
+        run: msbuild aimp_remote_reitansora.vcxproj /p:Configuration=Release /p:Platform=x64 /m
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin-dll
+          path: '**/*.dll'
